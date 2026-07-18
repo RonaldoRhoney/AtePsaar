@@ -1,0 +1,12 @@
+[
+  {"nome":"Banco do Brasil",                  "orgao":"Banco do Brasil S.A.",     "nivel":"Médio/Superior", "status":"aberto"},
+  {"nome":"Correios",                         "orgao":"ECT",                       "nivel":"Médio/Superior", "status":"aberto"},
+  {"nome":"Receita Federal — Auditor Fiscal", "orgao":"Receita Federal do Brasil", "nivel":"Superior",       "status":"aberto"},
+  {"nome":"Caixa Econômica Federal",          "orgao":"CAIXA",                     "nivel":"Médio/Superior", "status":"andamento"},
+  {"nome":"Polícia Federal",                  "orgao":"Polícia Federal",           "nivel":"Superior",       "status":"andamento"},
+  {"nome":"Tribunal Regional Federal",        "orgao":"TRF",                       "nivel":"Médio/Superior", "status":"andamento"},
+  {"nome":"INSS — Técnico do Seguro Social",  "orgao":"INSS",                      "nivel":"Médio",          "status":"concluido"},
+  {"nome":"Polícia Rodoviária Federal",       "orgao":"PRF",                       "nivel":"Médio",          "status":"concluido"},
+  {"nome":"Tribunal Regional do Trabalho",    "orgao":"TRT",                       "nivel":"Médio/Superior", "status":"concluido"},
+  {"nome":"IBGE — Agente/Recenseador",        "orgao":"IBGE",                      "nivel":"Médio",          "status":"aberto"}
+]

@@ -1027,7 +1027,8 @@ const ALT_LETTERS = ['A','B','C','D','E'];
 const REVIEW_STEPS = [{days:1,label:'24h'},{days:7,label:'7 dias'},{days:30,label:'30 dias'}];
 
 /* ================= Concursos no Brasil (lista curada manualmente) ================= */
-const CONCURSOS = [
+/* Sobrescrita em runtime por concursos.json (mantido pela automação N8N) — ver loadConcursosRemotos() */
+let CONCURSOS = [
   {nome:'Banco do Brasil',                       orgao:'Banco do Brasil S.A.',          nivel:'Médio/Superior', status:'aberto'},
   {nome:'Correios',                              orgao:'ECT',                            nivel:'Médio/Superior', status:'aberto'},
   {nome:'Receita Federal — Auditor Fiscal',      orgao:'Receita Federal do Brasil',      nivel:'Superior',       status:'aberto'},
@@ -1095,7 +1096,22 @@ const parseISO = s => { const [y,m,d]=s.split('-').map(Number); return new Date(
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ================= Init ================= */
+async function loadConcursosRemotos(){
+  try{
+    const ctrl = new AbortController();
+    const timeout = setTimeout(()=>ctrl.abort(), 3000);
+    const res = await fetch('concursos.json', {signal: ctrl.signal, cache:'no-store'});
+    clearTimeout(timeout);
+    if(!res.ok) return;
+    const data = await res.json();
+    if(Array.isArray(data) && data.length && data.every(c=>c.nome && c.orgao && c.status)){
+      CONCURSOS = data;
+    }
+  }catch(e){ /* offline ou sem o arquivo — mantém a lista embutida */ }
+}
+
 async function init(){
+  await loadConcursosRemotos();
   try{
     const raw = await store.get(STORAGE_KEY);
     if(raw) sessions = JSON.parse(raw) || [];

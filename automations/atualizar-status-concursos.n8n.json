@@ -1,0 +1,199 @@
+{
+  "name": "AtePssar — Atualizar status dos concursos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "trigger-cron",
+      "name": "Toda segunda às 7h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-1600, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.github.com/repos/RonaldoRhoney/AtePsaar/contents/concursos.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github+json" },
+            { "name": "X-GitHub-Api-Version", "value": "2022-11-28" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-get-file",
+      "name": "Buscar concursos.json (GitHub)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-1360, 0],
+      "credentials": {
+        "httpHeaderAuth": { "id": "PLACEHOLDER_GITHUB_CRED_ID", "name": "GitHub PAT (AtePssar)" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst sha = body.sha;\nconst content = JSON.parse(Buffer.from(body.content, 'base64').toString('utf-8'));\nreturn content.map(c => ({ json: { ...c, _sha: sha } }));"
+      },
+      "id": "code-decode",
+      "name": "Decodificar lista atual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1120, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const nome = $json.nome;\nconst q = encodeURIComponent(`${nome} concurso edital 2026`);\nreturn { json: { ...$json, _query: q } };"
+      },
+      "id": "code-query",
+      "name": "Montar busca",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-880, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://news.google.com/rss/search?q={{$json._query}}&hl=pt-BR&gl=BR&ceid=BR:pt-BR",
+        "options": {
+          "response": { "response": { "responseFormat": "text" } }
+        }
+      },
+      "id": "http-news",
+      "name": "Buscar notícias (Google News RSS)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-640, 0]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const xml = $input.item.json.data || $input.item.json;\nconst text = typeof xml === 'string' ? xml : JSON.stringify(xml);\nconst titles = [...text.matchAll(/<title>(.*?)<\\/title>/g)].map(m => m[1]).slice(1, 6);\nreturn { json: { ...$('Montar busca').item.json, _manchetes: titles.join(' | ') || 'nenhuma notícia encontrada' } };"
+      },
+      "id": "code-headlines",
+      "name": "Extrair manchetes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-400, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "content-type", "value": "application/json" },
+            { "name": "anthropic-version", "value": "2023-06-01" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: \"claude-opus-4-8\",\n  max_tokens: 400,\n  output_config: {\n    format: {\n      type: \"json_schema\",\n      schema: {\n        type: \"object\",\n        properties: {\n          status: { type: \"string\", enum: [\"aberto\", \"andamento\", \"concluido\"] },\n          confianca: { type: \"string\", enum: [\"alta\", \"media\", \"baixa\"] },\n          justificativa: { type: \"string\" }\n        },\n        required: [\"status\", \"confianca\", \"justificativa\"],\n        additionalProperties: false\n      }\n    }\n  },\n  messages: [{\n    role: \"user\",\n    content: `Concurso: ${$json.nome} (${$json.orgao}). Status atual conhecido: ${$json.status}.\\nManchetes recentes encontradas: ${$json._manchetes}\\n\\nCom base nessas manchetes, classifique a situação atual do concurso em uma das três categorias: \"aberto\" (inscrições abertas), \"andamento\" (provas/etapas em curso ou aguardando resultado), \"concluido\" (processo encerrado/homologado). Se as manchetes não trouxerem informação clara e recente, mantenha o status atual e marque confianca como \"baixa\".`\n  }]\n}) }}",
+        "options": {}
+      },
+      "id": "http-claude",
+      "name": "Classificar com Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-160, 0],
+      "credentials": {
+        "httpHeaderAuth": { "id": "PLACEHOLDER_ANTHROPIC_CRED_ID", "name": "Anthropic API Key" }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const prev = $('Extrair manchetes').item.json;\nlet parsed;\ntry {\n  const text = $json.content[0].text;\n  parsed = JSON.parse(text);\n} catch(e) {\n  parsed = { status: prev.status, confianca: 'baixa', justificativa: 'falha ao interpretar resposta do modelo' };\n}\nconst mudou = parsed.status !== prev.status && parsed.confianca === 'alta';\nreturn { json: {\n  nome: prev.nome, orgao: prev.orgao, nivel: prev.nivel, _sha: prev._sha,\n  statusAtual: prev.status,\n  status: mudou ? parsed.status : prev.status,\n  confianca: parsed.confianca,\n  justificativa: parsed.justificativa,\n  mudou\n} };"
+      },
+      "id": "code-decide",
+      "name": "Decidir novo status",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [80, 0]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const items = $input.all().map(i => i.json);\nconst sha = items[0]?._sha;\nconst mudancas = items.filter(i => i.mudou);\nconst novaLista = items.map(({nome, orgao, nivel, status}) => ({nome, orgao, nivel, status}));\nreturn { json: {\n  temMudancas: mudancas.length > 0,\n  sha,\n  novaLista,\n  changelog: mudancas.map(m => `${m.nome}: ${m.statusAtual} → ${m.status} (${m.justificativa})`).join('\\n')\n} };"
+      },
+      "id": "code-aggregate",
+      "name": "Consolidar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{$json.temMudancas}}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-mudancas",
+      "name": "Houve mudança?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [560, 0]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://api.github.com/repos/RonaldoRhoney/AtePsaar/contents/concursos.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github+json" },
+            { "name": "X-GitHub-Api-Version", "value": "2022-11-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  message: \"Atualização automática de status dos concursos (N8N)\",\n  content: Buffer.from(JSON.stringify($json.novaLista, null, 2)).toString('base64'),\n  sha: $json.sha\n}) }}",
+        "options": {}
+      },
+      "id": "http-commit",
+      "name": "Commitar concursos.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, -80],
+      "credentials": {
+        "httpHeaderAuth": { "id": "PLACEHOLDER_GITHUB_CRED_ID", "name": "GitHub PAT (AtePssar)" }
+      }
+    }
+  ],
+  "connections": {
+    "Toda segunda às 7h": { "main": [[{ "node": "Buscar concursos.json (GitHub)", "type": "main", "index": 0 }]] },
+    "Buscar concursos.json (GitHub)": { "main": [[{ "node": "Decodificar lista atual", "type": "main", "index": 0 }]] },
+    "Decodificar lista atual": { "main": [[{ "node": "Montar busca", "type": "main", "index": 0 }]] },
+    "Montar busca": { "main": [[{ "node": "Buscar notícias (Google News RSS)", "type": "main", "index": 0 }]] },
+    "Buscar notícias (Google News RSS)": { "main": [[{ "node": "Extrair manchetes", "type": "main", "index": 0 }]] },
+    "Extrair manchetes": { "main": [[{ "node": "Classificar com Claude", "type": "main", "index": 0 }]] },
+    "Classificar com Claude": { "main": [[{ "node": "Decidir novo status", "type": "main", "index": 0 }]] },
+    "Decidir novo status": { "main": [[{ "node": "Consolidar", "type": "main", "index": 0 }]] },
+    "Consolidar": { "main": [[{ "node": "Houve mudança?", "type": "main", "index": 0 }]] },
+    "Houve mudança?": { "main": [[{ "node": "Commitar concursos.json", "type": "main", "index": 0 }], []] }
+  }
+}
