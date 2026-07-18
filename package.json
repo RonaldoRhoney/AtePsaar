@@ -1,0 +1,9 @@
+{
+  "name": "atepssar",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AtePssar — Estação de Estudos (RhoneyInc). App estático; a pasta api/ hospeda funções serverless da Vercel.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest"
+  }
+}

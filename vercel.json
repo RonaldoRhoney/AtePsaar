@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/redacao-agente.js": {
+      "maxDuration": 60
+    }
+  }
+}
