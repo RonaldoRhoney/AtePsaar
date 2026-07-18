@@ -6,30 +6,44 @@
 <title>AtePssar · Rumo ao BB 2026</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230E1420'/%3E%3Ctext x='50' y='62' font-size='55' text-anchor='middle'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Archivo:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#0E1420;
+    --bg:#0B0F1A;
+    --bg-2:#111A2C;
     --surface:#151D2C;
     --surface-2:#1B2537;
     --border:#25314A;
-    --gold:#E2BE6E;
-    --gold-dim:rgba(226,190,110,.14);
+    --gold:#F0C572;
+    --gold-dim:rgba(240,197,114,.14);
     --teal:#3FA796;
     --teal-dim:rgba(63,167,150,.14);
-    --text:#E8ECF4;
+    --coral:#FF8B6B;
+    --coral-dim:rgba(255,139,107,.14);
+    --violet:#B98CE0;
+    --violet-dim:rgba(185,140,224,.14);
+    --text:#EDEFF7;
     --muted:#8B95A9;
     --danger:#E06C75;
     --radius:14px;
     --font-display:'Archivo',sans-serif;
+    --font-serif:'Fraunces',serif;
     --font-mono:'JetBrains Mono',monospace;
+    --gradient-success:linear-gradient(135deg,#F0C572 0%,#FF8B6B 100%);
+    --gradient-aurora:linear-gradient(135deg,#F0C572 0%,#FF8B6B 45%,#B98CE0 100%);
+    --shadow-glow:0 10px 32px -10px rgba(240,197,114,.4);
+    --shadow-card:0 14px 34px -16px rgba(0,0,0,.55);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
   section[id]{scroll-margin-top:74px}
   body{
-    background:var(--bg);
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(240,197,114,.07), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(185,140,224,.06), transparent 55%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    background-attachment:fixed;
     color:var(--text);
     font-family:var(--font-display);
     font-weight:500;
@@ -72,11 +86,19 @@
     margin-top:16px;
   }
   .stat{
+    position:relative;overflow:hidden;
     background:var(--surface);
     border:1px solid var(--border);
     border-radius:var(--radius);
     padding:12px 14px;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
+  .stat::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--gradient-success);opacity:0;transition:opacity .2s ease;
+  }
+  .stat:hover{transform:translateY(-3px);box-shadow:var(--shadow-card);border-color:rgba(240,197,114,.4)}
+  .stat:hover::before{opacity:1}
   .stat .n{
     font-family:var(--font-mono);
     font-size:1.35rem;
@@ -92,7 +114,14 @@
     border:1px solid var(--border);
     border-radius:var(--radius);
     padding:18px 16px;
+    transition:box-shadow .25s ease, border-color .25s ease;
   }
+  .card:hover{box-shadow:var(--shadow-card)}
+  .chart-card,.q-card,.concurso-card,.school-card,.video-card{
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .chart-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-card)}
+  .concurso-card:hover,.q-card:hover{border-color:rgba(240,197,114,.35);box-shadow:var(--shadow-card)}
   h2{
     font-size:.95rem;
     font-family:var(--font-mono);
@@ -169,7 +198,8 @@
   .btn{
     margin-top:14px;
     width:100%;
-    background:var(--gold);
+    background:var(--gradient-success);
+    background-size:160% 160%;
     color:#1A1408;
     border:none;
     border-radius:10px;
@@ -178,9 +208,10 @@
     font-weight:800;
     font-size:.95rem;
     cursor:pointer;
-    transition:.15s;
+    transition:transform .15s ease, box-shadow .15s ease, background-position .4s ease;
   }
-  .btn:hover{filter:brightness(1.08)}
+  .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-glow);background-position:100% 0}
+  .btn:active{transform:translateY(0)}
   .btn:focus-visible{outline:2px solid var(--text);outline-offset:2px}
   .msg{
     margin-top:10px;font-size:.8rem;font-family:var(--font-mono);
@@ -278,15 +309,36 @@
   .menu-wrap{position:relative}
 
   /* ---------- Hero (marca AtePssar) ---------- */
-  .hero-brand{margin:2px 0 24px}
-  .hero-word{
-    font-family:var(--font-display);font-weight:800;
-    font-size:clamp(2.1rem,7vw,3.2rem);letter-spacing:-.03em;
-    color:var(--text);line-height:1.05;
+  .hero-brand{position:relative;margin:6px 0 28px;padding:30px 6px 6px;overflow:hidden;isolation:isolate}
+  .hero-brand::before{
+    content:'';position:absolute;z-index:-1;inset:-60% -15% auto -15%;height:320px;
+    background:
+      radial-gradient(closest-side, rgba(240,197,114,.30), transparent 70%),
+      radial-gradient(closest-side at 72% 35%, rgba(255,139,107,.22), transparent 70%),
+      radial-gradient(closest-side at 25% 65%, rgba(185,140,224,.20), transparent 70%);
+    filter:blur(10px);
   }
-  .hero-word .hi{color:var(--gold)}
-  .hero-tagline{color:var(--muted);font-size:.95rem;margin-top:6px;max-width:520px;line-height:1.5}
-  .hero-tagline b{color:var(--teal)}
+  .hero-word{
+    font-family:var(--font-serif);font-weight:700;font-style:normal;
+    font-size:clamp(2.4rem,8.5vw,4rem);letter-spacing:-.02em;
+    color:var(--text);line-height:1.02;
+  }
+  .hero-word .hi{
+    background:var(--gradient-aurora);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-tagline{color:var(--muted);font-size:.96rem;margin-top:10px;max-width:540px;line-height:1.6}
+  .hero-tagline b{
+    background:var(--gradient-success);-webkit-background-clip:text;background-clip:text;color:transparent;
+    font-weight:700;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .hero-brand::before{animation:aurora-float 14s ease-in-out infinite alternate}
+  }
+  @keyframes aurora-float{
+    0%{transform:translate(-3%,-2%) scale(1)}
+    100%{transform:translate(3%,4%) scale(1.1)}
+  }
   .menu-btn{
     background:var(--surface-2);border:1px solid var(--border);
     color:var(--text);border-radius:9px;padding:8px 14px;
@@ -322,16 +374,34 @@
     border-radius:16px;max-width:580px;width:100%;
     max-height:88vh;overflow:auto;padding:22px 20px;
   }
-  .guide-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
-  .guide-num{
-    flex:none;width:26px;height:26px;border-radius:50%;
-    background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);
-    font-family:var(--font-mono);font-size:.75rem;font-weight:700;
-    display:flex;align-items:center;justify-content:center;
+  #guideModal.open{align-items:flex-start;padding-top:6vh}
+
+  /* ---------- Assistente "Como usar" (5 passos) ---------- */
+  .guide-modal{max-width:460px;text-align:center;position:relative;overflow:hidden}
+  .guide-modal::before{
+    content:'';position:absolute;z-index:-1;inset:-40% -20% auto -20%;height:220px;
+    background:radial-gradient(closest-side, rgba(240,197,114,.22), transparent 70%),
+               radial-gradient(closest-side at 75% 40%, rgba(255,139,107,.16), transparent 70%);
+    filter:blur(14px);
   }
-  .guide-step h4{font-size:.88rem;font-weight:700;margin-bottom:2px}
-  .guide-step p{font-size:.8rem;color:var(--muted);line-height:1.55}
-  .guide-step p b{color:var(--teal);font-weight:700}
+  .guide-progress{display:flex;justify-content:center;gap:7px;margin-bottom:18px}
+  .guide-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.2s}
+  .guide-dot.active{background:var(--gradient-success);width:22px;border-radius:5px}
+  .guide-dot.done{background:var(--teal)}
+  .guide-slide{animation:guide-in .35s cubic-bezier(.16,1,.3,1) both}
+  @keyframes guide-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .guide-icon{font-size:2.6rem;margin-bottom:10px}
+  .guide-slide h2{
+    font-family:var(--font-serif);font-size:1.5rem;font-weight:700;
+    margin-bottom:10px;letter-spacing:-.01em;
+    text-transform:none;color:var(--text);
+    border:none;padding:0;
+  }
+  .guide-slide h2::before{content:none}
+  .guide-slide p{color:var(--muted);font-size:.9rem;line-height:1.6}
+  .guide-slide p b{color:var(--teal)}
+  .guide-nav{display:flex;gap:10px;align-items:center;margin-top:22px}
+  .guide-nav .btn-ghost{margin-top:0;flex:none;width:auto;padding:12px 16px}
 
   /* ---------- Gráficos ---------- */
   .charts{
@@ -638,11 +708,21 @@
   @media(max-width:560px){.footer-top{grid-template-columns:1fr}}
 
   @media (prefers-reduced-motion:no-preference){
-    .card,.chart-card,.stat{animation:rise .4s ease both}
-    @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .card,.chart-card,.stat{animation:rise .5s cubic-bezier(.16,1,.3,1) both}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   }
   @media(max-width:480px){
     .chart-box{height:200px}
+  }
+
+  /* ---------- Celebração (confete) ---------- */
+  .confetti-piece{
+    position:fixed;width:7px;height:7px;border-radius:2px;pointer-events:none;z-index:200;
+    animation:confetti-burst .85s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes confetti-burst{
+    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+    100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.35);opacity:0}
   }
 </style>
 </head>
@@ -1009,53 +1089,46 @@
 
 <!-- Modal: Como usar -->
 <div class="modal-overlay" id="guideModal" role="dialog" aria-modal="true" aria-label="Como usar a aplicação">
-  <div class="modal">
-    <h2>Como usar a Estação de Estudos</h2>
-    <div class="guide-step"><span class="guide-num">1</span><div>
-      <h4>Configure seu concurso</h4>
-      <p>No menu, vá em <b>⚙️ Configurações</b>: edite o nome do concurso, a data-alvo, a meta de redações e as matérias com seus pesos (1–5). O app vem pronto para o Banco do Brasil 2026, mas funciona para qualquer concurso.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">2</span><div>
-      <h4>Siga o ciclo semanal</h4>
-      <p>O ciclo de <b>2 blocos de 1h por dia</b> é montado automaticamente conforme os pesos. O terminal no topo sugere a matéria de hoje — e se adapta ao seu desempenho.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">3</span><div>
-      <h4>Registre cada sessão de estudo</h4>
-      <p>Em <b>✍️ Registrar estudo</b>, informe matéria, minutos, questões e acertos. Preencha o campo <b>Tópico</b> para agendar revisões automáticas.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">4</span><div>
-      <h4>Revise no prazo (24h → 7d → 30d)</h4>
-      <p>Em <b>🔁 Revisões</b>, dê baixa nas revisões do dia. As atrasadas aparecem em vermelho — priorize sempre as de 24h, que mais protegem contra o esquecimento.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">5</span><div>
-      <h4>Monte seu banco de questões</h4>
-      <p>Em <b>🧩 Banco de questões</b>, cadastre questões por matéria, ano, banca e dificuldade. Depois pratique: responda direto no card e acompanhe seu % de acerto por questão.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">6</span><div>
-      <h4>Escreva redações toda semana</h4>
-      <p>Registre em <b>📝 Redações</b> com data, tema e nota. O card no topo mostra se você bateu a meta semanal.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">7</span><div>
-      <h4>Peça ajuda ao Agente Pena com a redação</h4>
-      <p>Em <b>🪶 Agente Pena</b>, gere uma redação-modelo pro seu concurso (com tema à sua escolha ou sugerido pelo agente) ou cole a sua pra receber nota estimada, pontos fortes, pontos a melhorar e observações de norma culta.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">8</span><div>
-      <h4>Acompanhe o Painel de Desenvolvimento</h4>
-      <p>Os <b>6 gráficos</b> consolidam tudo sozinhos: horas, distribuição, % de acerto, redações e evolução semanal. Nada de planilha manual.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">9</span><div>
-      <h4>Deixe o Agente Lince mirar seus pontos fracos</h4>
-      <p>Em <b>🔍 Agente Lince</b>, o app analisa suas sessões, questões e redações e aponta automaticamente onde focar — revisões atrasadas, nota baixa em redação ou a matéria com menor % de acerto — com dicas certeiras e um atalho pra praticar na hora.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">10</span><div>
-      <h4>Explore concursos, vídeo-aulas e escolas</h4>
-      <p>Em <b>🔎 Concursos no Brasil</b>, filtre por situação (aberto, em andamento, concluído). Em <b>▶️ Vídeo-aulas</b>, acesse buscas prontas no YouTube por matéria. Em <b>🏫 Escolas de cursos</b>, veja links pras maiores plataformas de preparação.</p>
-    </div></div>
-    <div class="guide-step"><span class="guide-num">11</span><div>
-      <h4>Compartilhe e faça backup</h4>
-      <p>Envie este arquivo para quem quiser: cada pessoa configura o próprio concurso e <b>os dados ficam salvos só no aparelho dela</b>. Em 💾 Backup, exporte/importe seus dados para trocar de dispositivo.</p>
-    </div></div>
-    <button class="btn" id="btnCloseGuide">Entendi, bora estudar! 🚀</button>
+  <div class="modal guide-modal">
+    <div class="guide-progress" id="guideProgress">
+      <span class="guide-dot" data-step="1"></span>
+      <span class="guide-dot" data-step="2"></span>
+      <span class="guide-dot" data-step="3"></span>
+      <span class="guide-dot" data-step="4"></span>
+      <span class="guide-dot" data-step="5"></span>
+    </div>
+
+    <div class="guide-slide" data-slide="1">
+      <div class="guide-icon">🎯</div>
+      <h2>Bem-vindo ao AtePssar</h2>
+      <p>Configure seu concurso em <b>⚙️ Configurações</b>: nome, data-alvo, meta de redações e as matérias com peso (1–5). Já vem pronto pro Banco do Brasil 2026, mas funciona pra qualquer concurso.</p>
+    </div>
+    <div class="guide-slide" data-slide="2" hidden>
+      <div class="guide-icon">📅</div>
+      <h2>Um ciclo de estudos sob medida</h2>
+      <p>O ciclo semanal é montado automaticamente pelos pesos das matérias, e o terminal no topo sugere o que estudar hoje. Em <b>✍️ Registrar estudo</b>, você marca minutos, questões e acertos.</p>
+    </div>
+    <div class="guide-slide" data-slide="3" hidden>
+      <div class="guide-icon">🧩</div>
+      <h2>Memória de longo prazo</h2>
+      <p>Em <b>🔁 Revisões</b>, o app cobra revisão em 24h → 7 dias → 30 dias pra fixar o conteúdo. Em <b>🧩 Banco de questões</b>, cadastre e pratique questões por matéria, ano e dificuldade.</p>
+    </div>
+    <div class="guide-slide" data-slide="4" hidden>
+      <div class="guide-icon">🪶</div>
+      <h2>Redação e pontos fracos, cobertos</h2>
+      <p>O <b>🪶 Agente Pena</b> gera redações-modelo pro seu concurso e corrige a sua. O <b>🔍 Agente Lince</b> analisa seu desempenho e aponta exatamente onde focar — sem achismo.</p>
+    </div>
+    <div class="guide-slide" data-slide="5" hidden>
+      <div class="guide-icon">🚀</div>
+      <h2>Tudo isso, num só lugar</h2>
+      <p>Acompanhe tudo no <b>📊 Painel</b>, explore concursos, vídeo-aulas e escolas, e faça <b>💾 backup</b> quando quiser trocar de aparelho. Bora começar?</p>
+    </div>
+
+    <div class="guide-nav">
+      <button class="btn-ghost" id="btnGuideSkip" type="button">Pular</button>
+      <button class="btn-ghost" id="btnGuideBack" type="button" style="display:none">Voltar</button>
+      <button class="btn" id="btnGuideNext" type="button" style="margin-top:0;flex:1">Próximo</button>
+    </div>
   </div>
 </div>
 
@@ -1315,22 +1388,16 @@ async function init(){
     navPanel.classList.remove('open'); menuBtn.classList.remove('open');
     menuBtn.setAttribute('aria-expanded','false');
   }));
-  $('navHelp').addEventListener('click', e=>{ e.preventDefault(); openGuide(); });
-  $('btnCloseGuide').addEventListener('click', closeGuide);
+  $('navHelp').addEventListener('click', e=>{ e.preventDefault(); openGuide(false); });
   $('guideModal').addEventListener('click', e=>{ if(e.target===$('guideModal')) closeGuide(); });
+  $('btnGuideNext').addEventListener('click', guideNext);
+  $('btnGuideBack').addEventListener('click', guideBack);
+  $('btnGuideSkip').addEventListener('click', ()=>{ closeGuide(); if(guideChainLogin) openGoogleModal(); });
 
   /* Login com Google (visual — sem autenticação real ainda) */
-  $('btnGoogleLogin').addEventListener('click', ()=>{
-    $('googleModal').classList.add('open');
-    document.body.style.overflow='hidden';
-  });
-  $('btnCloseGoogle').addEventListener('click', ()=>{
-    $('googleModal').classList.remove('open');
-    document.body.style.overflow='';
-  });
-  $('googleModal').addEventListener('click', e=>{
-    if(e.target===$('googleModal')){ $('googleModal').classList.remove('open'); document.body.style.overflow=''; }
-  });
+  $('btnGoogleLogin').addEventListener('click', openGoogleModal);
+  $('btnCloseGoogle').addEventListener('click', closeGoogleModal);
+  $('googleModal').addEventListener('click', e=>{ if(e.target===$('googleModal')) closeGoogleModal(); });
 
   /* Escolher concurso da lista (header) */
   $('btnPickExam').addEventListener('click', openPickModal);
@@ -1344,13 +1411,20 @@ async function init(){
 
   try{
     const seen = await store.get(GUIDE_KEY);
-    if(!seen) openGuide();
+    if(!seen) openGuide(true);
   }catch(e){}
 
   renderAll();
 }
 
-function openGuide(){
+const GUIDE_STEPS = 5;
+let guideStep = 1;
+let guideChainLogin = false;
+
+function openGuide(chainLogin){
+  guideChainLogin = !!chainLogin;
+  guideStep = 1;
+  renderGuideStep();
   $('guideModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -1358,6 +1432,36 @@ async function closeGuide(){
   $('guideModal').classList.remove('open');
   document.body.style.overflow='';
   try{ await store.set(GUIDE_KEY,'1'); }catch(e){}
+}
+function renderGuideStep(){
+  document.querySelectorAll('.guide-slide').forEach(el=>{
+    el.hidden = Number(el.dataset.slide) !== guideStep;
+  });
+  document.querySelectorAll('.guide-dot').forEach(dot=>{
+    const n = Number(dot.dataset.step);
+    dot.classList.toggle('active', n===guideStep);
+    dot.classList.toggle('done', n<guideStep);
+  });
+  $('btnGuideBack').style.display = guideStep>1 ? '' : 'none';
+  $('btnGuideSkip').style.display = guideStep<GUIDE_STEPS ? '' : 'none';
+  $('btnGuideNext').textContent = guideStep<GUIDE_STEPS ? 'Próximo' : 'Entendi, vamos começar! 🚀';
+}
+function guideNext(){
+  if(guideStep<GUIDE_STEPS){ guideStep++; renderGuideStep(); return; }
+  closeGuide();
+  if(guideChainLogin) openGoogleModal();
+}
+function guideBack(){
+  if(guideStep>1){ guideStep--; renderGuideStep(); }
+}
+
+function openGoogleModal(){
+  $('googleModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeGoogleModal(){
+  $('googleModal').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 /* Aplica a configuração atual em toda a interface */
@@ -1860,6 +1964,7 @@ async function saveRedacao(){
   await persistRedacoes();
   $('rdTema').value=''; $('rdNota').value='';
   msg.textContent = '> redação registrada ✓' + (nota!==null ? ' nota '+nota : '');
+  celebrate($('btnSaveRedacao'));
   renderAll();
 }
 
@@ -2055,6 +2160,7 @@ async function saveSession(){
 
   $('fMin').value=''; $('fQ').value=''; $('fC').value=''; $('fTopic').value='';
   msg.textContent = `> sessão salva: ${S[selectedSubject].name} · ${min}min ✓` + (topicTitle ? ' · revisões agendadas 📅' : '');
+  celebrate($('btnSave'));
   renderAll();
 }
 
@@ -2420,7 +2526,7 @@ function renderReviews(){
         <span class="rev-tag ${lateDays>0?'late':''}">${step.label}${lateDays>0?' · '+lateDays+'d atrasada':''}</span>`;
       const btn = document.createElement('button');
       btn.className='rev-check'; btn.textContent='Revisado ✓';
-      btn.addEventListener('click', ()=>markReviewDone(topic.id, idx));
+      btn.addEventListener('click', ()=>{ celebrate(btn); markReviewDone(topic.id, idx); });
       li.appendChild(btn);
       const edit = document.createElement('button');
       edit.className='rev-del'; edit.textContent='✎'; edit.title='Editar tópico'; edit.setAttribute('aria-label','Editar tópico');
@@ -2486,6 +2592,52 @@ function buildTopicEditRow(topic){
   return li;
 }
 
+/* ---------- Dinamismo: contagem animada + confete de celebração ---------- */
+function prefersReducedMotion(){
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+function animateNumber(el, newText){
+  const m = String(newText).match(/^(-?\d+(?:[.,]\d+)?)(.*)$/);
+  if(!m || prefersReducedMotion()){ el.textContent = newText; return; }
+  const target = parseFloat(m[1].replace(',', '.'));
+  const suffix = m[2];
+  const prevMatch = (el.textContent||'').match(/^(-?\d+(?:[.,]\d+)?)/);
+  const start = prevMatch ? parseFloat(prevMatch[1].replace(',', '.')) : 0;
+  if(!isFinite(target) || start===target){ el.textContent = newText; return; }
+  const duration = 550, t0 = performance.now();
+  const isInt = Number.isInteger(target);
+  function frame(now){
+    const p = Math.min(1, (now-t0)/duration);
+    const eased = 1 - Math.pow(1-p, 3);
+    const val = start + (target-start)*eased;
+    el.textContent = (isInt ? Math.round(val) : val.toFixed(1)) + suffix;
+    if(p<1) requestAnimationFrame(frame); else el.textContent = newText;
+  }
+  requestAnimationFrame(frame);
+}
+
+function celebrate(el){
+  if(!el || prefersReducedMotion()) return;
+  const rect = el.getBoundingClientRect();
+  const originX = rect.left + rect.width/2, originY = rect.top + rect.height/2;
+  const colors = ['#F0C572','#FF8B6B','#B98CE0','#3FA796'];
+  for(let i=0;i<14;i++){
+    const p = document.createElement('span');
+    p.className = 'confetti-piece';
+    const angle = Math.random()*Math.PI*2;
+    const dist = 50 + Math.random()*70;
+    p.style.setProperty('--dx', (Math.cos(angle)*dist)+'px');
+    p.style.setProperty('--dy', (Math.sin(angle)*dist)+'px');
+    p.style.setProperty('--rot', (Math.random()*360)+'deg');
+    p.style.background = colors[i%colors.length];
+    p.style.left = originX+'px';
+    p.style.top = originY+'px';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 900);
+  }
+}
+
 function renderStats(){
   const totalMin = sessions.reduce((a,s)=>a+s.minutes,0);
   const totalQ = sessions.reduce((a,s)=>a+s.questions,0);
@@ -2498,11 +2650,11 @@ function renderStats(){
   const weekEssays = redacoes.filter(r=>parseISO(r.date)>=start).length;
   const goal = config.essayGoal ?? 1;
 
-  $('stStreak').textContent = computeStreak();
-  $('stWeek').textContent = fmtH(weekMin);
-  $('stTotal').textContent = fmtH(totalMin);
-  $('stAcc').textContent = totalQ>0 ? Math.round(totalC/totalQ*100)+'%' : '–';
-  $('stEssay').textContent = goal>0 ? weekEssays+'/'+goal : weekEssays;
+  animateNumber($('stStreak'), String(computeStreak()));
+  animateNumber($('stWeek'), fmtH(weekMin));
+  animateNumber($('stTotal'), fmtH(totalMin));
+  animateNumber($('stAcc'), totalQ>0 ? Math.round(totalC/totalQ*100)+'%' : '–');
+  animateNumber($('stEssay'), goal>0 ? weekEssays+'/'+goal : String(weekEssays));
   $('stEssay').style.color = goal>0 ? (weekEssays>=goal ? 'var(--teal)' : 'var(--gold)') : 'var(--gold)';
 }
 
@@ -2580,11 +2732,33 @@ function buildSessionEditRow(s){
 }
 
 /* ================= Charts ================= */
-const gridColor = 'rgba(139,149,169,.12)';
+const gridColor = 'rgba(139,149,169,.10)';
 const tickColor = '#8B95A9';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.font.size = 10;
 Chart.defaults.color = tickColor;
+Chart.defaults.animation.duration = 750;
+Chart.defaults.animation.easing = 'easeOutQuart';
+Chart.defaults.plugins.tooltip.backgroundColor = '#0F1622';
+Chart.defaults.plugins.tooltip.titleColor = '#F0C572';
+Chart.defaults.plugins.tooltip.titleFont = {family:"'Archivo',sans-serif", weight:'700', size:11};
+Chart.defaults.plugins.tooltip.bodyColor = '#EDEFF7';
+Chart.defaults.plugins.tooltip.bodyFont = {family:"'JetBrains Mono',monospace", size:11};
+Chart.defaults.plugins.tooltip.borderColor = '#25314A';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
+Chart.defaults.plugins.tooltip.displayColors = false;
+
+/* Gradiente "aurora" no canvas — respeita o resize do Chart.js v4 */
+function vGradient(context, stops){
+  const {chart} = context;
+  const {ctx, chartArea} = chart;
+  if(!chartArea) return 'rgba(240,197,114,.5)';
+  const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+  stops.forEach(([offset,color])=>g.addColorStop(offset,color));
+  return g;
+}
 
 function upsertChart(key, canvasId, config){
   if(charts[key]){ charts[key].destroy(); }
@@ -2604,10 +2778,15 @@ function renderCharts(){
   }
   upsertChart('days','chDays',{
     type:'bar',
-    data:{labels:labels14,datasets:[{data:data14,backgroundColor:'#E2BE6E',borderRadius:4,maxBarThickness:18}]},
+    data:{labels:labels14,datasets:[{
+      data:data14,
+      backgroundColor:(ctx)=>vGradient(ctx,[[0,'#F0C572'],[1,'#FF8B6B']]),
+      hoverBackgroundColor:(ctx)=>vGradient(ctx,[[0,'#FFD98F'],[1,'#FFA588']]),
+      borderRadius:6, maxBarThickness:18,
+    }]},
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+'h'}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+'h de estudo'}}},
       scales:{
         x:{grid:{display:false},ticks:{maxRotation:60,autoSkip:true,maxTicksLimit:7}},
         y:{beginAtZero:true,suggestedMax:2,grid:{color:gridColor},ticks:{callback:v=>v+'h'}}
@@ -2624,14 +2803,15 @@ function renderCharts(){
       datasets:[{
         data: withTime.length ? withTime.map(s=>totals[s.id].min) : [1],
         backgroundColor: withTime.length ? withTime.map(s=>s.color) : ['#25314A'],
-        borderColor:'#151D2C', borderWidth:2
+        borderColor:'#151D2C', borderWidth:2,
+        hoverOffset:8, hoverBorderColor:'#0F1622',
       }]
     },
     options:{
-      responsive:true,maintainAspectRatio:false,cutout:'62%',
+      responsive:true,maintainAspectRatio:false,cutout:'64%',
       plugins:{
-        legend:{position:'bottom',labels:{boxWidth:9,padding:8}},
-        tooltip:{enabled:withTime.length>0,callbacks:{label:c=>' '+c.label+': '+fmtH(c.parsed)}}
+        legend:{position:'bottom',labels:{boxWidth:9,padding:8,font:{family:"'Archivo',sans-serif",size:10,weight:'600'}}},
+        tooltip:{enabled:withTime.length>0,displayColors:true,callbacks:{label:c=>' '+c.label+': '+fmtH(c.parsed)}}
       }
     }
   });
@@ -2646,9 +2826,9 @@ function renderCharts(){
         data: withQ.length ? withQ.map(s=>Math.round(totals[s.id].c/totals[s.id].q*100)) : [0],
         backgroundColor: withQ.length ? withQ.map(s=>{
           const p = totals[s.id].c/totals[s.id].q;
-          return p>=0.7 ? '#3FA796' : p>=0.5 ? '#E2BE6E' : '#E06C75';
+          return p>=0.7 ? '#3FA796' : p>=0.5 ? '#F0C572' : '#E06C75';
         }) : ['#25314A'],
-        borderRadius:4, maxBarThickness:20
+        borderRadius:6, maxBarThickness:20
       }]
     },
     options:{
@@ -2675,8 +2855,10 @@ function renderCharts(){
   upsertChart('weeks','chWeeks',{
     type:'line',
     data:{labels:wLabels,datasets:[
-      {data:wData,borderColor:'#3FA796',backgroundColor:'rgba(63,167,150,.15)',fill:true,tension:.35,pointBackgroundColor:'#3FA796',pointRadius:3},
-      {data:wLabels.map(()=>14),borderColor:'rgba(226,190,110,.55)',borderDash:[6,5],pointRadius:0,fill:false,label:'meta'}
+      {data:wData,borderColor:'#3FA796',borderWidth:2.5,
+        backgroundColor:(ctx)=>vGradient(ctx,[[0,'rgba(63,167,150,.45)'],[1,'rgba(63,167,150,0)']]),
+        fill:true,tension:.4,pointBackgroundColor:'#3FA796',pointBorderColor:'#0F1622',pointRadius:3,pointHoverRadius:5},
+      {data:wLabels.map(()=>14),borderColor:'rgba(240,197,114,.55)',borderDash:[6,5],pointRadius:0,fill:false,label:'meta'}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,
@@ -2704,8 +2886,8 @@ function renderCharts(){
   upsertChart('essays','chEssays',{
     type:'bar',
     data:{labels:wLabels,datasets:[
-      {type:'bar',data:eData,backgroundColor:eData.map(v=>v>=goal&&goal>0?'#3FA796':'#E2BE6E'),borderRadius:4,maxBarThickness:22},
-      {type:'line',data:wLabels.map(()=>goal),borderColor:'rgba(226,190,110,.55)',borderDash:[6,5],pointRadius:0}
+      {type:'bar',data:eData,backgroundColor:eData.map(v=>v>=goal&&goal>0?'#3FA796':'#F0C572'),borderRadius:6,maxBarThickness:22},
+      {type:'line',data:wLabels.map(()=>goal),borderColor:'rgba(240,197,114,.55)',borderDash:[6,5],pointRadius:0}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,
@@ -2721,8 +2903,10 @@ function renderCharts(){
   upsertChart('weekq','chWeekQ',{
     type:'bar',
     data:{labels:wLabels,datasets:[
-      {type:'bar',data:qData,backgroundColor:'rgba(127,179,232,.75)',borderRadius:4,maxBarThickness:22,yAxisID:'y'},
-      {type:'line',data:accWeek,borderColor:'#E2BE6E',pointBackgroundColor:'#E2BE6E',pointRadius:3,tension:.3,spanGaps:true,yAxisID:'y2'}
+      {type:'bar',data:qData,
+        backgroundColor:(ctx)=>vGradient(ctx,[[0,'rgba(185,140,224,.85)'],[1,'rgba(185,140,224,.35)']]),
+        borderRadius:6,maxBarThickness:22,yAxisID:'y'},
+      {type:'line',data:accWeek,borderColor:'#F0C572',borderWidth:2.5,pointBackgroundColor:'#F0C572',pointBorderColor:'#0F1622',pointRadius:3,pointHoverRadius:5,tension:.35,spanGaps:true,yAxisID:'y2'}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,
