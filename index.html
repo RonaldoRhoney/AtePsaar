@@ -416,6 +416,29 @@
   .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
   .btn-ghost.danger:hover{border-color:var(--danger);color:var(--danger)}
 
+  /* ---------- Agente Lince ---------- */
+  .lince-card{border-color:var(--gold);background:linear-gradient(180deg,var(--gold-dim),var(--surface) 60%)}
+  .lince-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .lince-avatar{
+    flex:none;width:46px;height:46px;border-radius:12px;
+    background:var(--surface-2);border:1px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  }
+  .lince-sub{color:var(--muted);font-size:.8rem}
+  .lince-diagnosis{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:12px;
+    padding:14px;font-size:.9rem;line-height:1.6;margin-bottom:12px;
+  }
+  .lince-diagnosis b{color:var(--gold)}
+  .lince-tips{list-style:none;margin-bottom:14px}
+  .lince-tips li{
+    display:flex;gap:9px;padding:7px 0;font-size:.84rem;line-height:1.5;
+    border-bottom:1px dashed var(--border);
+  }
+  .lince-tips li:last-child{border:none}
+  .lince-tips li::before{content:'💡';flex:none}
+  .lince-actions{display:flex;gap:10px;flex-wrap:wrap}
+
   /* ---------- Banco de questões ---------- */
   textarea{
     width:100%;background:var(--surface-2);border:1px solid var(--border);
@@ -597,6 +620,7 @@
           <a href="#questoes">🧩 Banco de questões</a>
           <a href="#redacoes">📝 Redações</a>
           <a href="#painel">📊 Painel de desenvolvimento</a>
+          <a href="#agente">🔍 Agente Lince</a>
           <a href="#ciclo">📅 Ciclo semanal</a>
           <a href="#concursos">🔎 Concursos no Brasil</a>
           <a href="#videoaulas">▶️ Vídeo-aulas</a>
@@ -747,6 +771,20 @@
     </div>
   </section>
 
+  <!-- Agente Lince -->
+  <section id="agente">
+    <div class="card lince-card">
+      <div class="lince-head">
+        <div class="lince-avatar">🔍</div>
+        <div>
+          <h2 style="margin-bottom:2px">Agente Lince</h2>
+          <p class="lince-sub">Seu radar de pontos fracos — foca no que mais vai te aprovar</p>
+        </div>
+      </div>
+      <div id="linceBody"></div>
+    </div>
+  </section>
+
   <!-- Ciclo semanal -->
   <section id="ciclo">
     <div class="card">
@@ -761,7 +799,7 @@
   <!-- Concursos no Brasil -->
   <section id="concursos">
     <div class="card">
-      <h2>Concursos no Brasil</h2>
+      <h2>Principais Concursos</h2>
       <p style="color:var(--muted);font-size:.8rem;margin-bottom:14px">Lista curada manualmente pela RhoneyInc — confira sempre o edital oficial antes de se inscrever.</p>
       <div class="search-box">
         <input type="text" id="concursoSearch" placeholder="Buscar por nome ou órgão…">
@@ -859,6 +897,7 @@
           <a href="#questoes">Banco de questões</a>
           <a href="#redacoes">Redações</a>
           <a href="#painel">Painel</a>
+          <a href="#agente">Agente Lince</a>
           <a href="#concursos">Concursos no Brasil</a>
           <a href="#videoaulas">Vídeo-aulas</a>
           <a href="#escolas">Escolas de cursos</a>
@@ -919,10 +958,14 @@
       <p>Os <b>6 gráficos</b> consolidam tudo sozinhos: horas, distribuição, % de acerto, redações e evolução semanal. Nada de planilha manual.</p>
     </div></div>
     <div class="guide-step"><span class="guide-num">8</span><div>
+      <h4>Deixe o Agente Lince mirar seus pontos fracos</h4>
+      <p>Em <b>🔍 Agente Lince</b>, o app analisa suas sessões, questões e redações e aponta automaticamente onde focar — revisões atrasadas, nota baixa em redação ou a matéria com menor % de acerto — com dicas certeiras e um atalho pra praticar na hora.</p>
+    </div></div>
+    <div class="guide-step"><span class="guide-num">9</span><div>
       <h4>Explore concursos, vídeo-aulas e escolas</h4>
       <p>Em <b>🔎 Concursos no Brasil</b>, filtre por situação (aberto, em andamento, concluído). Em <b>▶️ Vídeo-aulas</b>, acesse buscas prontas no YouTube por matéria. Em <b>🏫 Escolas de cursos</b>, veja links pras maiores plataformas de preparação.</p>
     </div></div>
-    <div class="guide-step"><span class="guide-num">9</span><div>
+    <div class="guide-step"><span class="guide-num">10</span><div>
       <h4>Compartilhe e faça backup</h4>
       <p>Envie este arquivo para quem quiser: cada pessoa configura o próprio concurso e <b>os dados ficam salvos só no aparelho dela</b>. Em 💾 Backup, exporte/importe seus dados para trocar de dispositivo.</p>
     </div></div>
@@ -1592,6 +1635,7 @@ async function saveQuestao(){
   resetQuestaoForm();
   populateQAnoFilter();
   renderQuestoes();
+  renderLince();
   msg.textContent = '> questão salva ✓';
 }
 
@@ -1601,6 +1645,7 @@ async function removeQuestao(id){
   if(editingQuestaoId===id) resetQuestaoForm();
   populateQAnoFilter();
   renderQuestoes();
+  renderLince();
 }
 
 async function answerQuestao(id, letra){
@@ -1611,6 +1656,7 @@ async function answerQuestao(id, letra){
   else q.erros = (q.erros||0)+1;
   await persistQuestoes();
   renderQuestoes();
+  renderLince();
 }
 
 function retryQuestao(id){
@@ -1990,6 +2036,110 @@ function subjectTotals(){
   return t;
 }
 
+/* ================= Agente Lince — diagnóstico de pontos fracos ================= */
+const TIPS_REDACAO = [
+  'Rascunhe a tese antes de escrever — se não souber resumir sua ideia em 1 frase, ela ainda não está pronta.',
+  'Um parágrafo, um argumento. Não misture ideias diferentes no mesmo parágrafo.',
+  'Releia o tema proposto ao terminar — fugir do tema costuma zerar a redação, mesmo com boa escrita.',
+  'Use dados, exemplos históricos ou repertório sociocultural — isso separa nota boa de nota mediana.',
+  'Se a banca pedir proposta de intervenção, feche com algo concreto: quem faz, o quê, como.',
+  'Escreva primeiro, revise depois. Não trave tentando fazer a frase perfeita de primeira.',
+];
+const TIPS_MATERIA = [
+  'Refaça as questões que você errou antes de avançar pra conteúdo novo — errar de novo é sinal de que a base não fechou.',
+  'Resuma o conteúdo com suas próprias palavras. Se travar resumindo, é ali que está a lacuna.',
+  'Estude em blocos curtos (25–40 min) seguidos de questões — teoria sem prática fixa pouco.',
+  'Errou o mesmo tipo de questão 2x? Volte no fundamento antes de tentar mais questões daquele assunto.',
+];
+
+function diagnoseLince(){
+  const today = todayISO();
+  let atrasadas = 0;
+  topics.forEach(t=>t.reviews.forEach(r=>{ if(!r.done && r.due<=today) atrasadas++; }));
+  if(atrasadas>=3) return {tipo:'revisao', atrasadas};
+
+  const comNota = redacoes.filter(r=>r.nota!==null && r.nota!==undefined);
+  if(comNota.length>=2){
+    const media = comNota.reduce((a,r)=>a+r.nota,0)/comNota.length;
+    if(media<65) return {tipo:'redacao', media:Math.round(media)};
+  }
+
+  const totals = subjectTotals();
+  const merged = SUBJECTS.map(s=>{
+    const t = totals[s.id] || {q:0,c:0};
+    const bank = questoes.filter(q=>q.subject===s.id);
+    const bankC = bank.reduce((a,q)=>a+(q.acertos||0),0);
+    const bankTotal = bank.reduce((a,q)=>a+(q.acertos||0)+(q.erros||0),0);
+    const totalQ = t.q + bankTotal, totalC = t.c + bankC;
+    return {id:s.id, name:s.name, color:s.color, totalQ, totalC, pct: totalQ ? totalC/totalQ : null};
+  }).filter(m=>m.totalQ>=5);
+
+  if(merged.length){
+    merged.sort((a,b)=>a.pct-b.pct);
+    const weakest = merged[0];
+    if(weakest.pct<0.7) return {tipo:'materia', subject:weakest};
+  }
+
+  return {tipo:'semdados'};
+}
+
+function praticarMateriaLince(subjectId){
+  qFilterSubject = subjectId;
+  buildQFilters();
+  renderQuestoes();
+  $('questoes').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderLince(){
+  const box = $('linceBody');
+  const d = diagnoseLince();
+
+  if(d.tipo==='revisao'){
+    box.innerHTML = `<div class="lince-diagnosis">Você tem <b>${d.atrasadas} revisões atrasadas</b>. Isso é o maior risco pro seu aprendizado agora — revisão atrasada é conteúdo que já começou a esquecer.</div>
+      <ul class="lince-tips">
+        <li>Priorize sempre as revisões de <b>24h</b> — são as que mais protegem contra o esquecimento.</li>
+        <li>Não acumule: 5 minutos revisando hoje evitam reaprender do zero amanhã.</li>
+      </ul>`;
+    const actions = document.createElement('div'); actions.className='lince-actions';
+    const btn = document.createElement('button'); btn.className='btn-sm'; btn.textContent='Ver revisões pendentes';
+    btn.addEventListener('click', ()=>$('revisao').scrollIntoView({behavior:'smooth', block:'start'}));
+    actions.appendChild(btn); box.appendChild(actions);
+    return;
+  }
+
+  if(d.tipo==='redacao'){
+    box.innerHTML = `<div class="lince-diagnosis">Sua média em redações está em <b>${d.media} pontos</b> — abaixo do que costuma aprovar. Redação é o que mais separa candidatos parecidos: vale focar aqui.</div>
+      <ul class="lince-tips">${TIPS_REDACAO.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`;
+    const actions = document.createElement('div'); actions.className='lince-actions';
+    const btn1 = document.createElement('button'); btn1.className='btn-sm'; btn1.textContent='Registrar nova redação';
+    btn1.addEventListener('click', ()=>$('redacoes').scrollIntoView({behavior:'smooth', block:'start'}));
+    const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent('dicas de redação ' + (config.examName||''));
+    const btn2 = document.createElement('a'); btn2.className='btn-ghost'; btn2.href=url; btn2.target='_blank'; btn2.rel='noopener'; btn2.textContent='Buscar dicas de redação no YouTube';
+    actions.append(btn1, btn2); box.appendChild(actions);
+    return;
+  }
+
+  if(d.tipo==='materia'){
+    const s = d.subject;
+    const pct = Math.round(s.pct*100);
+    box.innerHTML = `<div class="lince-diagnosis">Sua matéria mais frágil agora é <b style="color:${s.color}">${esc(s.name)}</b>, com <b>${pct}%</b> de acerto em ${s.totalQ} questões. Focar nela rende mais pontos do que reforçar o que você já domina.</div>
+      <ul class="lince-tips">${TIPS_MATERIA.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`;
+    const actions = document.createElement('div'); actions.className='lince-actions';
+    const btn1 = document.createElement('button'); btn1.className='btn-sm'; btn1.textContent=`Praticar ${s.name} agora`;
+    btn1.addEventListener('click', ()=>praticarMateriaLince(s.id));
+    const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent((config.examName||'') + ' ' + s.name + ' aula');
+    const btn2 = document.createElement('a'); btn2.className='btn-ghost'; btn2.href=url; btn2.target='_blank'; btn2.rel='noopener'; btn2.textContent='Ver vídeo-aulas';
+    actions.append(btn1, btn2); box.appendChild(actions);
+    return;
+  }
+
+  box.innerHTML = `<div class="lince-diagnosis">Ainda não tenho dados suficientes pra mirar seus pontos fracos. Registre algumas sessões de estudo e responda questões no <b>Banco de questões</b> — quanto mais eu vejo, mais certeiro fico.</div>`;
+  const actions = document.createElement('div'); actions.className='lince-actions';
+  const btn = document.createElement('button'); btn.className='btn-sm'; btn.textContent='Registrar estudo de hoje';
+  btn.addEventListener('click', ()=>$('checkin').scrollIntoView({behavior:'smooth', block:'start'}));
+  actions.appendChild(btn); box.appendChild(actions);
+}
+
 function computeStreak(){
   if(!sessions.length) return 0;
   const days = new Set(sessions.map(s=>s.date));
@@ -2035,6 +2185,7 @@ function renderAll(){
   renderRedacoes();
   renderHistory();
   renderCharts();
+  renderLince();
 }
 
 function renderReviews(){
