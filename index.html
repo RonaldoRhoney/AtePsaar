@@ -416,6 +416,74 @@
   .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
   .btn-ghost.danger:hover{border-color:var(--danger);color:var(--danger)}
 
+  /* ---------- Banco de questões ---------- */
+  textarea{
+    width:100%;background:var(--surface-2);border:1px solid var(--border);
+    color:var(--text);border-radius:10px;padding:10px 12px;
+    font-family:var(--font-display);font-size:.88rem;line-height:1.5;
+    resize:vertical;min-height:80px;margin-top:5px;
+  }
+  textarea:focus{outline:none;border-color:var(--gold)}
+  .alt-rows{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .alt-row{display:flex;align-items:center;gap:8px}
+  .alt-row .letter{
+    flex:none;width:26px;height:26px;border-radius:50%;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-size:.74rem;font-weight:700;
+  }
+  .alt-row input[type="text"]{flex:1}
+  .alt-row input[type="radio"]{width:18px;height:18px;accent-color:var(--teal);flex:none}
+
+  .q-stats{
+    font-family:var(--font-mono);font-size:.76rem;color:var(--muted);
+    padding:10px 0;border-bottom:1px dashed var(--border);margin-bottom:12px;
+  }
+  .q-stats b{color:var(--gold)}
+  .q-card{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:12px;
+    padding:14px;margin-bottom:12px;
+  }
+  .q-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .q-tag{
+    font-family:var(--font-mono);font-size:.66rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.05em;border-radius:6px;
+    padding:3px 8px;border:1px solid var(--border);color:var(--muted);
+    display:flex;align-items:center;gap:5px;
+  }
+  .q-tag i{width:7px;height:7px;border-radius:50%;flex:none}
+  .q-tag.dif-facil{border-color:var(--teal);color:var(--teal)}
+  .q-tag.dif-media{border-color:var(--gold);color:var(--gold)}
+  .q-tag.dif-dificil{border-color:var(--danger);color:var(--danger)}
+  .q-text{font-size:.88rem;line-height:1.6;margin-bottom:12px;white-space:pre-wrap}
+  .q-alts{display:flex;flex-direction:column;gap:7px}
+  .q-alt{
+    display:flex;gap:8px;align-items:flex-start;text-align:left;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    border-radius:9px;padding:9px 11px;font-family:var(--font-display);font-size:.84rem;
+    cursor:pointer;transition:.15s;width:100%;
+  }
+  .q-alt:hover{border-color:var(--gold)}
+  .q-alt b{flex:none;font-family:var(--font-mono);color:var(--muted)}
+  .q-alt.correct{border-color:var(--teal);background:var(--teal-dim);color:var(--teal)}
+  .q-alt.wrong{border-color:var(--danger);background:rgba(224,108,117,.14);color:var(--danger)}
+  .q-alt:disabled{cursor:default;opacity:.85}
+  .q-feedback{font-family:var(--font-mono);font-size:.78rem;margin-top:10px}
+  .q-feedback.ok{color:var(--teal)}
+  .q-feedback.bad{color:var(--danger)}
+  .q-explain{font-size:.78rem;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
+  .q-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px;flex-wrap:wrap}
+  .q-perf{font-family:var(--font-mono);font-size:.72rem;color:var(--muted)}
+  .q-actions{display:flex;gap:4px}
+  .q-actions button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px}
+  .q-actions button:hover{color:var(--gold)}
+  .q-actions button.q-del:hover{color:var(--danger)}
+  .q-retry{
+    margin-top:8px;background:none;border:1px solid var(--border);color:var(--muted);
+    border-radius:8px;padding:5px 11px;font-family:var(--font-mono);font-size:.72rem;cursor:pointer;
+  }
+  .q-retry:hover{border-color:var(--gold);color:var(--gold)}
+
   /* ---------- Autocomplete (busca de concurso) ---------- */
   .autocomplete{position:relative}
   .autocomplete-list{
@@ -526,6 +594,7 @@
           <a href="#sugestao">🎯 Sugestão de hoje</a>
           <a href="#checkin">✍️ Registrar estudo</a>
           <a href="#revisao">🔁 Revisões</a>
+          <a href="#questoes">🧩 Banco de questões</a>
           <a href="#redacoes">📝 Redações</a>
           <a href="#painel">📊 Painel de desenvolvimento</a>
           <a href="#ciclo">📅 Ciclo semanal</a>
@@ -605,6 +674,46 @@
       <p style="color:var(--muted);font-size:.74rem;margin-top:10px;font-family:var(--font-mono)">
         Cada tópico gera 3 revisões automáticas: 24h, 7 dias e 30 dias após o estudo. Revisar no prazo é o que fixa o conteúdo na memória de longo prazo.
       </p>
+    </div>
+  </section>
+
+  <!-- Banco de questões -->
+  <section id="questoes">
+    <div class="card">
+      <h2 id="qFormTitle">Cadastrar questão</h2>
+      <div class="fields">
+        <div><label for="qSubject">Matéria</label><select id="qSubject"></select></div>
+        <div><label for="qAno">Ano</label><input type="number" id="qAno" min="1990" max="2100" placeholder="2024"></div>
+        <div><label for="qBanca">Banca (opcional)</label><input type="text" id="qBanca" maxlength="40" placeholder="ex.: Cesgranrio"></div>
+        <div><label for="qDificuldade">Dificuldade</label>
+          <select id="qDificuldade">
+            <option value="facil">Fácil</option>
+            <option value="media" selected>Média</option>
+            <option value="dificil">Difícil</option>
+          </select>
+        </div>
+      </div>
+      <label for="qEnunciado" style="margin-top:10px">Enunciado</label>
+      <textarea id="qEnunciado" maxlength="1200" placeholder="Cole ou digite o enunciado da questão…"></textarea>
+      <label style="margin-top:10px">Alternativas · preencha ao menos 2 e marque a correta</label>
+      <div class="alt-rows" id="qAlternativas"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="btn" id="btnSaveQuestao" style="flex:1;min-width:180px">Salvar questão</button>
+        <button class="btn-ghost" id="btnCancelQuestao" style="flex:0 1 auto;display:none">Cancelar edição</button>
+      </div>
+      <div class="msg" id="qMsg" aria-live="polite"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h2>Praticar questões</h2>
+      <div class="search-box"><input type="text" id="qSearch" placeholder="Buscar no enunciado…"></div>
+      <div class="chips" id="qSubjectFilters" role="listbox" aria-label="Filtrar por matéria"></div>
+      <div class="chips" id="qDifFilters" role="listbox" aria-label="Filtrar por dificuldade" style="margin-top:2px"></div>
+      <div class="fields" style="margin-top:10px;margin-bottom:4px">
+        <div><label for="qAnoFilter">Ano</label><select id="qAnoFilter"><option value="todos">Todos os anos</option></select></div>
+      </div>
+      <div class="q-stats" id="qStats"></div>
+      <div id="qList"></div>
     </div>
   </section>
 
@@ -747,6 +856,7 @@
           <a href="#sugestao">Sugestão de hoje</a>
           <a href="#checkin">Registrar estudo</a>
           <a href="#revisao">Revisões</a>
+          <a href="#questoes">Banco de questões</a>
           <a href="#redacoes">Redações</a>
           <a href="#painel">Painel</a>
           <a href="#concursos">Concursos no Brasil</a>
@@ -797,18 +907,22 @@
       <p>Em <b>🔁 Revisões</b>, dê baixa nas revisões do dia. As atrasadas aparecem em vermelho — priorize sempre as de 24h, que mais protegem contra o esquecimento.</p>
     </div></div>
     <div class="guide-step"><span class="guide-num">5</span><div>
+      <h4>Monte seu banco de questões</h4>
+      <p>Em <b>🧩 Banco de questões</b>, cadastre questões por matéria, ano, banca e dificuldade. Depois pratique: responda direto no card e acompanhe seu % de acerto por questão.</p>
+    </div></div>
+    <div class="guide-step"><span class="guide-num">6</span><div>
       <h4>Escreva redações toda semana</h4>
       <p>Registre em <b>📝 Redações</b> com data, tema e nota. O card no topo mostra se você bateu a meta semanal.</p>
     </div></div>
-    <div class="guide-step"><span class="guide-num">6</span><div>
+    <div class="guide-step"><span class="guide-num">7</span><div>
       <h4>Acompanhe o Painel de Desenvolvimento</h4>
       <p>Os <b>6 gráficos</b> consolidam tudo sozinhos: horas, distribuição, % de acerto, redações e evolução semanal. Nada de planilha manual.</p>
     </div></div>
-    <div class="guide-step"><span class="guide-num">7</span><div>
+    <div class="guide-step"><span class="guide-num">8</span><div>
       <h4>Explore concursos, vídeo-aulas e escolas</h4>
       <p>Em <b>🔎 Concursos no Brasil</b>, filtre por situação (aberto, em andamento, concluído). Em <b>▶️ Vídeo-aulas</b>, acesse buscas prontas no YouTube por matéria. Em <b>🏫 Escolas de cursos</b>, veja links pras maiores plataformas de preparação.</p>
     </div></div>
-    <div class="guide-step"><span class="guide-num">8</span><div>
+    <div class="guide-step"><span class="guide-num">9</span><div>
       <h4>Compartilhe e faça backup</h4>
       <p>Envie este arquivo para quem quiser: cada pessoa configura o próprio concurso e <b>os dados ficam salvos só no aparelho dela</b>. Em 💾 Backup, exporte/importe seus dados para trocar de dispositivo.</p>
     </div></div>
@@ -906,7 +1020,10 @@ const DAY_NAMES = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sába
 const STORAGE_KEY = 'bb2026-sessions';
 const TOPICS_KEY = 'bb2026-topics';
 const REDACOES_KEY = 'bb2026-redacoes';
+const QUESTOES_KEY = 'bb2026-questoes';
 const GUIDE_KEY = 'bb2026-guide-seen';
+const DIF_LABEL = {facil:'Fácil', media:'Média', dificil:'Difícil'};
+const ALT_LETTERS = ['A','B','C','D','E'];
 const REVIEW_STEPS = [{days:1,label:'24h'},{days:7,label:'7 dias'},{days:30,label:'30 dias'}];
 
 /* ================= Concursos no Brasil (lista curada manualmente) ================= */
@@ -954,11 +1071,16 @@ const store = {
 let sessions = [];   // {id, date:'YYYY-MM-DD', subject, minutes, questions, correct}
 let topics = [];     // {id, subject, title, date, reviews:[{due:'YYYY-MM-DD', done:bool}]}
 let redacoes = [];   // {id, date:'YYYY-MM-DD', tema, nota|null}
+let questoes = [];   // {id, subject, ano, banca, dificuldade, enunciado, alternativas:[{letra,texto}], correta, explicacao, acertos, erros}
 let selectedSubject = null;
 let charts = {};
 let editingSessionId = null;
 let editingRedacaoId = null;
 let editingTopicId = null;
+let editingQuestaoId = null;
+let qFilterSubject = 'todos';
+let qFilterDificuldade = 'todos';
+let qAnsweredNow = {}; // {questaoId: letraEscolhida} — resposta selecionada na sessão atual, resetável
 
 const addDays = (iso, n) => {
   const d = parseISOsafe(iso); d.setDate(d.getDate()+n);
@@ -987,6 +1109,10 @@ async function init(){
     if(rawR) redacoes = JSON.parse(rawR) || [];
   }catch(e){ redacoes = []; }
   try{
+    const rawQ = await store.get(QUESTOES_KEY);
+    if(rawQ) questoes = JSON.parse(rawQ) || [];
+  }catch(e){ questoes = []; }
+  try{
     const rawC = await store.get(CONFIG_KEY);
     if(rawC){
       const c = JSON.parse(rawC);
@@ -1004,6 +1130,7 @@ async function init(){
     $('rTopic').value='';
   });
 
+  buildAltRowsForm();
   applyConfig();
   $('fDate').value = todayISO();
   $('rdDate').value = todayISO();
@@ -1016,6 +1143,12 @@ async function init(){
   $('btnAddSubject').addEventListener('click', addSubjectRow);
   $('btnSaveCfg').addEventListener('click', saveConfig);
   initConcursoAutocomplete();
+
+  /* Banco de questões */
+  $('btnSaveQuestao').addEventListener('click', saveQuestao);
+  $('btnCancelQuestao').addEventListener('click', resetQuestaoForm);
+  $('qSearch').addEventListener('input', renderQuestoes);
+  $('qAnoFilter').addEventListener('change', renderQuestoes);
 
   /* Menu e guia "Como usar" */
   const menuBtn = $('btnMenu'), navPanel = $('navPanel');
@@ -1090,6 +1223,9 @@ function applyConfig(){
   renderHeader();
   renderConfigUI();
   renderVideoAulas();
+  populateQSubjectSelect();
+  buildQFilters();
+  renderQuestoes();
 }
 
 function renderHeader(){
@@ -1296,10 +1432,267 @@ function renderEscolas(){
   });
 }
 
+/* ---------- Banco de questões ---------- */
+function populateQSubjectSelect(){
+  const sel = $('qSubject');
+  const prev = sel.value;
+  sel.innerHTML = '';
+  SUBJECTS.forEach(s=>{
+    const o = document.createElement('option');
+    o.value = s.id; o.textContent = s.name;
+    sel.appendChild(o);
+  });
+  if(SUBJECTS.some(s=>s.id===prev)) sel.value = prev;
+}
+
+function buildAltRowsForm(){
+  const box = $('qAlternativas');
+  box.innerHTML = '';
+  ALT_LETTERS.forEach(letra=>{
+    const row = document.createElement('div'); row.className = 'alt-row';
+    row.innerHTML = `
+      <span class="letter">${letra}</span>
+      <input type="text" class="alt-text" data-letra="${letra}" maxlength="200" placeholder="Texto da alternativa ${letra}">
+      <input type="radio" name="qCorreta" class="alt-radio" data-letra="${letra}" title="Marcar como correta">`;
+    box.appendChild(row);
+  });
+}
+
+function readAltRowsForm(){
+  const rows = [...document.querySelectorAll('#qAlternativas .alt-row')];
+  const alternativas = [];
+  let correta = null;
+  rows.forEach(row=>{
+    const letra = row.querySelector('.alt-text').dataset.letra;
+    const texto = row.querySelector('.alt-text').value.trim();
+    const marked = row.querySelector('.alt-radio').checked;
+    if(texto) alternativas.push({letra, texto});
+    if(marked && texto) correta = letra;
+  });
+  return {alternativas, correta};
+}
+
+function fillAltRowsForm(alternativas, correta){
+  const rows = [...document.querySelectorAll('#qAlternativas .alt-row')];
+  rows.forEach(row=>{
+    const letra = row.querySelector('.alt-text').dataset.letra;
+    const found = alternativas.find(a=>a.letra===letra);
+    row.querySelector('.alt-text').value = found ? found.texto : '';
+    row.querySelector('.alt-radio').checked = (letra === correta);
+  });
+}
+
+function buildQFilters(){
+  const subBox = $('qSubjectFilters');
+  subBox.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.type='button'; allBtn.className='chip'+(qFilterSubject==='todos'?' active':'');
+  allBtn.textContent='Todas as matérias'; allBtn.dataset.id='todos';
+  allBtn.addEventListener('click', ()=>{ qFilterSubject='todos'; buildQFilters(); renderQuestoes(); });
+  subBox.appendChild(allBtn);
+  SUBJECTS.forEach(s=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='chip'+(qFilterSubject===s.id?' active':'');
+    b.style.setProperty('--dot', s.color);
+    b.innerHTML = `<i></i>${esc(s.name)}`;
+    b.addEventListener('click', ()=>{ qFilterSubject=s.id; buildQFilters(); renderQuestoes(); });
+    subBox.appendChild(b);
+  });
+
+  const difBox = $('qDifFilters');
+  difBox.innerHTML = '';
+  [{id:'todos',label:'Todas dificuldades'}, {id:'facil',label:'Fácil'}, {id:'media',label:'Média'}, {id:'dificil',label:'Difícil'}].forEach(o=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='chip'+(qFilterDificuldade===o.id?' active':'');
+    b.textContent = o.label;
+    b.addEventListener('click', ()=>{ qFilterDificuldade=o.id; buildQFilters(); renderQuestoes(); });
+    difBox.appendChild(b);
+  });
+}
+
+function populateQAnoFilter(){
+  const sel = $('qAnoFilter');
+  const prev = sel.value;
+  const anos = [...new Set(questoes.map(q=>q.ano).filter(Boolean))].sort((a,b)=>b-a);
+  sel.innerHTML = '<option value="todos">Todos os anos</option>' + anos.map(a=>`<option value="${a}">${a}</option>`).join('');
+  if(anos.some(a=>String(a)===prev)) sel.value = prev;
+}
+
+function resetQuestaoForm(){
+  editingQuestaoId = null;
+  $('qSubject').value = SUBJECTS[0]?.id || '';
+  $('qAno').value = '';
+  $('qBanca').value = '';
+  $('qDificuldade').value = 'media';
+  $('qEnunciado').value = '';
+  fillAltRowsForm([], null);
+  $('qFormTitle').textContent = 'Cadastrar questão';
+  $('btnSaveQuestao').textContent = 'Salvar questão';
+  $('btnCancelQuestao').style.display = 'none';
+  $('qMsg').textContent = '';
+  $('qMsg').classList.remove('err');
+}
+
+function editQuestao(id){
+  const q = questoes.find(x=>x.id===id);
+  if(!q) return;
+  editingQuestaoId = id;
+  $('qSubject').value = q.subject;
+  $('qAno').value = q.ano || '';
+  $('qBanca').value = q.banca || '';
+  $('qDificuldade').value = q.dificuldade;
+  $('qEnunciado').value = q.enunciado;
+  fillAltRowsForm(q.alternativas, q.correta);
+  $('qFormTitle').textContent = 'Editar questão';
+  $('btnSaveQuestao').textContent = 'Salvar alterações';
+  $('btnCancelQuestao').style.display = 'inline-block';
+  $('questoes').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+async function saveQuestao(){
+  const msg = $('qMsg'); msg.classList.remove('err');
+  const subject = $('qSubject').value;
+  const ano = $('qAno').value ? parseInt($('qAno').value,10) : null;
+  const banca = $('qBanca').value.trim();
+  const dificuldade = $('qDificuldade').value;
+  const enunciado = $('qEnunciado').value.trim();
+  const {alternativas, correta} = readAltRowsForm();
+
+  if(!enunciado){ msg.textContent='> escreva o enunciado da questão'; msg.classList.add('err'); return; }
+  if(alternativas.length < 2){ msg.textContent='> preencha pelo menos 2 alternativas'; msg.classList.add('err'); return; }
+  if(!correta){ msg.textContent='> marque qual alternativa é a correta'; msg.classList.add('err'); return; }
+
+  if(editingQuestaoId){
+    const q = questoes.find(x=>x.id===editingQuestaoId);
+    Object.assign(q, {subject, ano, banca, dificuldade, enunciado, alternativas, correta});
+  }else{
+    questoes.push({
+      id:'q'+Date.now()+Math.floor(Math.random()*999),
+      subject, ano, banca, dificuldade, enunciado, alternativas, correta,
+      acertos:0, erros:0,
+    });
+  }
+  await persistQuestoes();
+  resetQuestaoForm();
+  populateQAnoFilter();
+  renderQuestoes();
+  msg.textContent = '> questão salva ✓';
+}
+
+async function removeQuestao(id){
+  questoes = questoes.filter(q=>q.id!==id);
+  await persistQuestoes();
+  if(editingQuestaoId===id) resetQuestaoForm();
+  populateQAnoFilter();
+  renderQuestoes();
+}
+
+async function answerQuestao(id, letra){
+  const q = questoes.find(x=>x.id===id);
+  if(!q || qAnsweredNow[id]) return;
+  qAnsweredNow[id] = letra;
+  if(letra === q.correta) q.acertos = (q.acertos||0)+1;
+  else q.erros = (q.erros||0)+1;
+  await persistQuestoes();
+  renderQuestoes();
+}
+
+function retryQuestao(id){
+  delete qAnsweredNow[id];
+  renderQuestoes();
+}
+
+function renderQuestoes(){
+  populateQAnoFilter();
+  const q = ($('qSearch').value||'').trim().toLowerCase();
+  const anoFilter = $('qAnoFilter').value;
+  const filtered = questoes.filter(x=>{
+    const okSubject = qFilterSubject==='todos' || x.subject===qFilterSubject;
+    const okDif = qFilterDificuldade==='todos' || x.dificuldade===qFilterDificuldade;
+    const okAno = anoFilter==='todos' || String(x.ano)===anoFilter;
+    const okQuery = !q || x.enunciado.toLowerCase().includes(q);
+    return okSubject && okDif && okAno && okQuery;
+  });
+
+  const totalRespondidas = questoes.reduce((a,x)=>a+(x.acertos||0)+(x.erros||0),0);
+  const totalAcertos = questoes.reduce((a,x)=>a+(x.acertos||0),0);
+  const pct = totalRespondidas ? Math.round(totalAcertos/totalRespondidas*100) : null;
+  $('qStats').innerHTML = `<b>${questoes.length}</b> questão(ões) cadastrada(s) · <b>${totalRespondidas}</b> resposta(s) registrada(s)`
+    + (pct!==null ? ` · <b>${pct}%</b> de acerto geral` : '');
+
+  const list = $('qList');
+  list.innerHTML = '';
+  if(!filtered.length){
+    list.innerHTML = '<div class="grid-empty">Nenhuma questão encontrada. Cadastre a primeira acima!</div>';
+    return;
+  }
+
+  filtered.forEach(item=>{
+    const s = S[item.subject];
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    const answered = qAnsweredNow[item.id];
+    const total = (item.acertos||0)+(item.erros||0);
+    const pctQ = total ? Math.round((item.acertos||0)/total*100) : null;
+
+    const tags = document.createElement('div'); tags.className='q-tags';
+    tags.innerHTML = `
+      <span class="q-tag">${s ? `<i style="background:${s.color}"></i>${esc(s.name)}` : 'Matéria removida'}</span>
+      ${item.ano ? `<span class="q-tag">${item.ano}</span>` : ''}
+      ${item.banca ? `<span class="q-tag">${esc(item.banca)}</span>` : ''}
+      <span class="q-tag dif-${item.dificuldade}">${DIF_LABEL[item.dificuldade]}</span>`;
+    card.appendChild(tags);
+
+    const text = document.createElement('div'); text.className='q-text'; text.textContent = item.enunciado;
+    card.appendChild(text);
+
+    const alts = document.createElement('div'); alts.className='q-alts';
+    item.alternativas.forEach(a=>{
+      const b = document.createElement('button');
+      b.type='button'; b.className='q-alt';
+      if(answered){
+        b.disabled = true;
+        if(a.letra===item.correta) b.classList.add('correct');
+        else if(a.letra===answered) b.classList.add('wrong');
+      }
+      b.innerHTML = `<b>${a.letra})</b> ${esc(a.texto)}`;
+      b.addEventListener('click', ()=>answerQuestao(item.id, a.letra));
+      alts.appendChild(b);
+    });
+    card.appendChild(alts);
+
+    if(answered){
+      const fb = document.createElement('div');
+      fb.className = 'q-feedback ' + (answered===item.correta ? 'ok' : 'bad');
+      fb.textContent = answered===item.correta ? '✓ Resposta correta!' : `✗ Resposta errada — a correta é a ${item.correta}.`;
+      card.appendChild(fb);
+      const retry = document.createElement('button');
+      retry.type='button'; retry.className='q-retry'; retry.textContent='Tentar novamente';
+      retry.addEventListener('click', ()=>retryQuestao(item.id));
+      card.appendChild(retry);
+    }
+
+    const footer = document.createElement('div'); footer.className='q-footer';
+    const perf = document.createElement('div'); perf.className='q-perf';
+    perf.textContent = total ? `Seu desempenho: ${item.acertos||0}/${total} (${pctQ}%)` : 'Ainda não respondida';
+    const actions = document.createElement('div'); actions.className='q-actions';
+    const editBtn = document.createElement('button'); editBtn.textContent='✎'; editBtn.title='Editar questão'; editBtn.setAttribute('aria-label','Editar questão');
+    editBtn.addEventListener('click', ()=>editQuestao(item.id));
+    const delBtn = document.createElement('button'); delBtn.className='q-del'; delBtn.textContent='×'; delBtn.title='Excluir questão'; delBtn.setAttribute('aria-label','Excluir questão');
+    delBtn.addEventListener('click', ()=>removeQuestao(item.id));
+    actions.append(editBtn, delBtn);
+    footer.append(perf, actions);
+    card.appendChild(footer);
+
+    list.appendChild(card);
+  });
+}
+
 /* ================= Ações ================= */
 async function persist(){ await store.set(STORAGE_KEY, JSON.stringify(sessions)); }
 async function persistTopics(){ await store.set(TOPICS_KEY, JSON.stringify(topics)); }
 async function persistRedacoes(){ await store.set(REDACOES_KEY, JSON.stringify(redacoes)); }
+async function persistQuestoes(){ await store.set(QUESTOES_KEY, JSON.stringify(questoes)); }
 
 /* ---------- Redações ---------- */
 async function saveRedacao(){
